@@ -8,12 +8,14 @@ import {
   HeadObjectCommand,
   ListObjectsV2Command,
   PutObjectCommand,
+  PutObjectCommandInput,
   S3Client,
   UploadPartCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { CacheTTL } from '@nestjs/cache-manager';
 import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { lookup } from 'mime-types';
 import { v4 as uuid } from 'uuid';
 import { LogService } from '../log';
@@ -23,6 +25,7 @@ interface UploadOptions {
   filename:   string;
   mimeType?:  string;
   directory?: string;
+  acl?:       'private' | 'public-read' | 'public-read-write' | 'authenticated-read';
 }
 
 interface PresignedUrlOptions {
@@ -32,11 +35,15 @@ interface PresignedUrlOptions {
 
 @Injectable()
 export class S3Service {
-  private readonly bucket = process.env.AWS_S3_BUCKET_NAME || '';
-  private readonly endpoint = process.env.AWS_S3_ENDPOINT || '';
+  private readonly bucket:   string;
+  private readonly endpoint: string;
 
   constructor(@Inject('S3_CLIENT') private readonly s3: S3Client,
-    private readonly logger: LogService) {
+    private readonly logger: LogService,
+    private readonly configService: ConfigService) {
+    this.bucket = this.configService.get<string>('S3_BUCKET_NAME') || '';
+
+    this.endpoint = this.configService.get<string>('S3_ENDPOINT') || '';
   }
 
   async upload(options: UploadOptions): Promise<string> {
@@ -45,6 +52,7 @@ export class S3Service {
       filename,
       mimeType,
       directory,
+      acl,
     } = options;
 
     const ext = filename.split('.').pop();
@@ -53,12 +61,18 @@ export class S3Service {
     const contentType = mimeType || lookup(filename) || 'application/octet-stream';
 
     try {
-      await this.s3.send(new PutObjectCommand({
+      const command: PutObjectCommandInput = {
         Bucket:      this.bucket,
         Key:         key,
         Body:        file,
         ContentType: contentType,
-      }));
+      };
+
+      if (acl) {
+        command.ACL = acl;
+      }
+
+      await this.s3.send(new PutObjectCommand(command));
 
       return key;
     } catch (err) {

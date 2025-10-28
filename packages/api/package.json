@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/api",
+  "name": "@speech-one/api",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -40,7 +40,7 @@
     "@nestjs/terminus": "^11.0.0",
     "@sentry/nestjs": "^10.19.0",
     "@sentry/profiling-node": "^10.19.0",
-    "@workspace/database": "workspace:*",
+    "@speech-one/database": "workspace:*",
     "bcryptjs": "^3.0.2",
     "cache-manager": "^7.2.4",
     "class-transformer": "^0.5.1",

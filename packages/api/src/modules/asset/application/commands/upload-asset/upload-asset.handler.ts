@@ -11,13 +11,18 @@ export class UploadAssetHandler implements ICommandHandler<UploadAssetCommand, U
   }
 
   async execute(command: UploadAssetCommand): Promise<UploadAssetResult> {
-    const { file, path } = command;
+    const {
+      file,
+      directory,
+      acl,
+    } = command;
 
     const key = await this.s3Service.upload({
-      file:      file.buffer,
-      filename:  file.originalname,
-      mimeType:  file.mimetype,
-      directory: path,
+      file:     file.buffer,
+      filename: file.originalname,
+      mimeType: file.mimetype,
+      directory,
+      acl,
     });
 
     const asset = await this.assetRepository.create({

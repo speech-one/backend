@@ -6,6 +6,8 @@ import {
   LogoutResult,
   RefreshTokenCommand,
   RefreshTokenResult,
+  RegisterCommand,
+  RegisterResult,
 } from '@modules/user/application/commands';
 import { UserEntity } from '@modules/user/domain/entities';
 import { CurrentUser, Public } from '@modules/user/presentation/decorators';
@@ -14,15 +16,20 @@ import {
   LoginResponseDto,
   LogoutRequestDto,
   RefreshTokenRequestDto,
+  RegisterRequestDto,
+  RegisterResponseDto,
 } from '@modules/user/presentation/dtos';
 import {
   Body,
   Controller,
   Logger,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -30,6 +37,30 @@ export class AuthController {
   private readonly logger = new Logger(AuthController.name);
 
   constructor(private readonly commandBus: CommandBus) {
+  }
+
+  @Public()
+  @Post('register')
+  @UseInterceptors(FileInterceptor('profileImage'))
+  @ApiConsumes('multipart/form-data')
+  @ApiResponseType({
+    type:        RegisterResponseDto,
+    description: 'User registration successful',
+    errors:      [
+      400,
+      500,
+    ],
+  })
+  async register(@Body() dto: RegisterRequestDto,
+    @UploadedFile() profileImage?: Express.Multer.File): Promise<RegisterResponseDto> {
+    const command = RegisterCommand.from({
+      ...dto,
+      profileImage,
+    });
+
+    const result = await this.commandBus.execute<RegisterCommand, RegisterResult>(command);
+
+    return RegisterResponseDto.from(result);
   }
 
   @Public()

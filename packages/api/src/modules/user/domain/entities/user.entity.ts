@@ -1,13 +1,15 @@
-import { UserStatus } from '@workspace/database';
+import { UserStatus } from '@speech-one/database';
 import { DataClass } from 'dataclasses';
 
 export type UserEntitySafe = Omit<UserEntity, 'password'>;
 
 export class UserEntity extends DataClass {
-  id:       string;
-  email:    string;
-  password: string;
-  status:   UserStatus;
+  id:             string;
+  name:           string;
+  email:          string;
+  password:       string;
+  profileImageId: string | null;
+  status:         UserStatus;
 
   createdAt: Date;
   updatedAt: Date;

@@ -1,5 +1,5 @@
 import { UserEntity, UserEntitySafe } from '@modules/user/domain/entities';
-import type { User } from '@workspace/database';
+import type { User } from '@speech-one/database';
 
 export class UserMapper {
   static toDomain(user: User): UserEntity {

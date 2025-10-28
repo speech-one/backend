@@ -11,4 +11,6 @@ model Asset {
   key String @unique
 
   createdAt DateTime @default(now())
+
+  users User[]
 }

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserStatus } from '@workspace/database';
+import { UserStatus } from '@speech-one/database';
 import { DataClass } from 'dataclasses';
 
 export class UserDetailResponseDto extends DataClass {
@@ -10,10 +10,23 @@ export class UserDetailResponseDto extends DataClass {
   id: string;
 
   @ApiProperty({
+    description: 'The name of the user',
+    example:     'John Doe',
+  })
+  name: string;
+
+  @ApiProperty({
     description: 'The email of the user',
     example:     'test@example.com',
   })
   email: string;
+
+  @ApiProperty({
+    description: 'The profile image URL of the user',
+    example:     'https://s3.example.com/profile-images/image.jpg',
+    required:    false,
+  })
+  profileImageUrl: string | null;
 
   @ApiProperty({
     description: 'The status of the user',

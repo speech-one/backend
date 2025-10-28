@@ -6,7 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { SentryExceptionCaptured } from '@sentry/nestjs';
-import { Prisma } from '@workspace/database';
+import { Prisma } from '@speech-one/database';
 import type { Request, Response } from 'express';
 import { APIResponseDto, type HttpMethod } from '../dto/response.dto';
 import { LogService } from '../modules/log/log.service';

@@ -8,4 +8,11 @@ export interface UserRepositoryPort {
   findByIdWithPassword(id: string): Promise<UserEntity | null>;
 
   findByEmail(email: string): Promise<UserEntitySafe | null>;
+
+  create(data: {
+    name: string;
+    email: string;
+    password: string;
+    profileImageId?: string | null;
+  }): Promise<UserEntitySafe>;
 }

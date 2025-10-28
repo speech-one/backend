@@ -77,7 +77,7 @@ importers:
       '@sentry/profiling-node':
         specifier: ^10.19.0
         version: 10.19.0
-      '@workspace/database':
+      '@speech-one/database':
         specifier: workspace:*
         version: link:../database
       bcryptjs:

@@ -1,4 +1,4 @@
-import type { LogLevel } from '@workspace/database';
+import type { LogLevel } from '@speech-one/database';
 
 export class CreateLogDto {
   level:   LogLevel;

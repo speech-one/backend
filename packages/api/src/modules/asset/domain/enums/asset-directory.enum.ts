@@ -1,3 +1,4 @@
 export enum AssetDirectory {
-  TEMP = 'temp',
+  TEMP           = 'temp',
+  PROFILE_IMAGES = 'profile-images',
 }

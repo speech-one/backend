@@ -1,7 +1,7 @@
+import { PrismaService } from '@/common/modules/prisma';
 import { UserEntity, UserEntitySafe } from '@modules/user/domain/entities/user.entity';
 import { UserRepositoryPort } from '@modules/user/domain/repositories/user.repository.port';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '@/common/modules/prisma';
 import { UserMapper } from '../mappers';
 
 @Injectable()
@@ -55,6 +55,24 @@ export class UserRepository implements UserRepositoryPort {
     if (!user) {
       return null;
     }
+
+    return UserMapper.toDomainSafe(user);
+  }
+
+  async create(data: {
+    name: string;
+    email: string;
+    password: string;
+    profileImageId?: string | null;
+  }): Promise<UserEntitySafe> {
+    const user = await this.prisma.user.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        profileImageId: data.profileImageId,
+      },
+    });
 
     return UserMapper.toDomainSafe(user);
   }

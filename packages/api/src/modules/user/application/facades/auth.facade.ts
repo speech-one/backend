@@ -6,6 +6,8 @@ import { LogoutCommand } from '../commands/logout/logout.command';
 import { LogoutResult } from '../commands/logout/logout.result';
 import { RefreshTokenCommand } from '../commands/refresh-token/refresh-token.command';
 import { RefreshTokenResult } from '../commands/refresh-token/refresh-token.result';
+import { RegisterCommand } from '../commands/register/register.command';
+import { RegisterResult } from '../commands/register/register.result';
 import { ValidateAccessTokenQuery } from '../queries/validate-access-token/validate-access-token.query';
 import { ValidateAccessTokenResult } from '../queries/validate-access-token/validate-access-token.result';
 
@@ -13,6 +15,19 @@ import { ValidateAccessTokenResult } from '../queries/validate-access-token/vali
 export class AuthFacade {
   constructor(private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus) {
+  }
+
+  async register(
+    name: string,
+    email: string,
+    password: string,
+    profileImage?: Express.Multer.File,
+  ): Promise<RegisterResult> {
+    const command = RegisterCommand.from({
+      name, email, password, profileImage,
+    });
+
+    return this.commandBus.execute<RegisterCommand, RegisterResult>(command);
   }
 
   async login(email: string, password: string): Promise<LoginResult> {

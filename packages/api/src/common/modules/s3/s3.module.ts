@@ -1,6 +1,7 @@
 import { S3Client } from '@aws-sdk/client-s3';
 import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LogModule } from '../log';
 import { S3Service } from './s3.service';
 
@@ -10,21 +11,23 @@ export const S3_CLIENT = 'S3_CLIENT';
   imports: [
     CacheModule.register(),
     LogModule,
+    ConfigModule,
   ],
   providers: [
     {
       provide:    S3_CLIENT,
-      useFactory: () => {
+      useFactory: (configService: ConfigService) => {
         return new S3Client({
-          region:      process.env.AWS_REGION,
+          region:      configService.get<string>('S3_REGION'),
           credentials: {
-            accessKeyId:     process.env.AWS_ACCESS_KEY_ID || '',
-            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+            accessKeyId:     configService.get<string>('S3_ACCESS_KEY_ID') || '',
+            secretAccessKey: configService.get<string>('S3_SECRET_ACCESS_KEY') || '',
           },
-          endpoint:       process.env.AWS_S3_ENDPOINT || '',
+          endpoint:       configService.get<string>('S3_ENDPOINT') || '',
           forcePathStyle: true,
         });
       },
+      inject: [ConfigService],
     },
     S3Service,
   ],

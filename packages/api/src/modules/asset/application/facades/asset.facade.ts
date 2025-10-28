@@ -24,9 +24,10 @@ export class AssetFacade {
   }
 
   async uploadAsset(file: Express.Multer.File,
-    directory?: AssetDirectory | string): Promise<UploadAssetResult> {
-    return this.commandBus.execute(UploadAssetCommand.from({
-      file, directory,
+    directory?: AssetDirectory | string,
+    acl?: 'private' | 'public-read' | 'public-read-write' | 'authenticated-read'): Promise<UploadAssetResult> {
+    return this.commandBus.execute(UploadAssetCommand.create({
+      file, directory, acl,
     }));
   }
 

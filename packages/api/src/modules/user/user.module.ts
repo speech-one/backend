@@ -5,7 +5,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { PrismaModule } from '@/common/modules/prisma';
 import { RedisModule } from '@/common/modules/redis';
-import { LoginHandler, LogoutHandler } from './application/commands';
+import { S3Module } from '@/common/modules/s3';
+import { AssetModule } from '@/modules/asset';
+import { LoginHandler, LogoutHandler, RegisterHandler } from './application/commands';
 import { RefreshTokenHandler } from './application/commands/refresh-token/refresh-token.handler';
 import { AuthFacade } from './application/facades';
 import { UserDetailHandler, ValidateAccessTokenHandler } from './application/queries';
@@ -18,6 +20,7 @@ const CommandHandlers = [
   LoginHandler,
   LogoutHandler,
   RefreshTokenHandler,
+  RegisterHandler,
 ];
 
 const QueryHandlers = [ValidateAccessTokenHandler, UserDetailHandler];
@@ -29,6 +32,8 @@ const QueryHandlers = [ValidateAccessTokenHandler, UserDetailHandler];
     PassportModule,
     PrismaModule,
     RedisModule,
+    AssetModule,
+    S3Module,
     JwtModule.registerAsync({
       imports:    [ConfigModule],
       useFactory: (configService: ConfigService) => ({ secret: configService.get<string>('JWT_SECRET') }),
