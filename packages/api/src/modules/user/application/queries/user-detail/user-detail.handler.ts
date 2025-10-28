@@ -1,4 +1,5 @@
 import { S3Service } from '@common/modules/s3';
+import { isPublicDirectory } from '@modules/asset/domain/enums';
 import { AssetRepository } from '@modules/asset/infrastructure/persistence';
 import { UserRepository } from '@modules/user/infrastructure/persistence';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
@@ -22,7 +23,12 @@ export class UserDetailHandler implements IQueryHandler<UserDetailQuery, UserDet
       const asset = await this.assetRepository.findById(user.profileImageId);
 
       if (asset) {
-        profileImageUrl = this.s3Service.getPublicUrl(asset.key);
+        const directory = asset.key.split('/')[0];
+        const isPublic = isPublicDirectory(directory);
+
+        profileImageUrl = isPublic
+          ? this.s3Service.getPublicUrl(asset.key)
+          : await this.s3Service.getPresignedUrl(asset.key);
       }
     }
 

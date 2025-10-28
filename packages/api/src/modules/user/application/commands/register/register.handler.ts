@@ -27,6 +27,11 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand, Registe
     let profileImageId: string | null = null;
 
     if (command.profileImage) {
+      /*
+       * Upload profile image to public directory with public-read ACL
+       * MinIO: ACL will be applied
+       * Cloudflare R2: ACL is ignored, bucket policy controls access
+       */
       const uploadResult = await this.assetFacade.uploadAsset(command.profileImage,
         AssetDirectory.PROFILE_IMAGES,
         'public-read');
