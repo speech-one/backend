@@ -1,7 +1,16 @@
 import { UserStatus } from '@speech-one/database';
 import { DataClass } from 'dataclasses';
 
-export type UserEntitySafe = Omit<UserEntity, 'password'>;
+export class UserEntitySafe extends DataClass {
+  id:             string;
+  name:           string;
+  email:          string;
+  profileImageId: string | null;
+  status:         UserStatus;
+
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export class UserEntity extends DataClass {
   id:             string;
@@ -25,7 +34,7 @@ export class UserEntity extends DataClass {
   toSafeUser(): UserEntitySafe {
     const { password: _password, ...safeUser } = this;
 
-    return safeUser as UserEntitySafe;
+    return UserEntitySafe.from(safeUser);
   }
 }
 

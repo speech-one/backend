@@ -9,7 +9,8 @@ import { S3Module } from '@/common/modules/s3';
 import { AssetModule } from '@/modules/asset';
 import { LoginHandler, LogoutHandler, RegisterHandler } from './application/commands';
 import { RefreshTokenHandler } from './application/commands/refresh-token/refresh-token.handler';
-import { AuthFacade } from './application/facades';
+import { UserUpdateHandler } from './application/commands/user-update';
+import { AuthFacade, UserFacade } from './application/facades';
 import { UserDetailHandler, ValidateAccessTokenHandler } from './application/queries';
 import { JwtAuthGuard } from './infrastructure/guards';
 import { UserRepository } from './infrastructure/persistence';
@@ -21,6 +22,7 @@ const CommandHandlers = [
   LogoutHandler,
   RefreshTokenHandler,
   RegisterHandler,
+  UserUpdateHandler,
 ];
 
 const QueryHandlers = [ValidateAccessTokenHandler, UserDetailHandler];
@@ -44,6 +46,7 @@ const QueryHandlers = [ValidateAccessTokenHandler, UserDetailHandler];
     ...CommandHandlers,
     ...QueryHandlers,
     AuthFacade,
+    UserFacade,
     JwtStrategy,
     JwtAuthGuard,
     UserRepository,

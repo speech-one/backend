@@ -2,6 +2,7 @@ import { UserEntity, UserEntitySafe } from '@modules/user/domain/entities/user.e
 import { UserRepositoryPort } from '@modules/user/domain/repositories/user.repository.port';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/common/modules/prisma';
+import { hashPassword } from '@/common/utils';
 import { UserMapper } from '../mappers';
 
 @Injectable()
@@ -59,20 +60,31 @@ export class UserRepository implements UserRepositoryPort {
     return UserMapper.toDomainSafe(user);
   }
 
-  async create(data: {
-    name:            string;
-    email:           string;
-    password:        string;
-    profileImageId?: string | null;
-  }): Promise<UserEntitySafe> {
-    const user = await this.prisma.user.create({ data: {
-      name:           data.name,
-      email:          data.email,
-      password:       data.password,
-      profileImageId: data.profileImageId,
-    } });
+  async create(user: UserEntity): Promise<UserEntitySafe> {
+    const data = UserMapper.toCreateInput(user);
+    const row = await this.prisma.user.create({ data });
 
-    return UserMapper.toDomainSafe(user);
+    return UserMapper.toDomainSafe(row);
+  }
+
+  async update(id: string, user: UserEntitySafe): Promise<UserEntitySafe> {
+    const data = UserMapper.toUpdateInputWithRelations(user);
+
+    const row = await this.prisma.user.update({
+      where: { id },
+      data,
+    });
+
+    return UserMapper.toDomainSafe(row);
+  }
+
+  async updatePassword(id: string, password: string): Promise<UserEntitySafe> {
+    const row = await this.prisma.user.update({
+      where: { id },
+      data:  { password: await hashPassword(password) },
+    });
+
+    return UserMapper.toDomainSafe(row);
   }
 }
 

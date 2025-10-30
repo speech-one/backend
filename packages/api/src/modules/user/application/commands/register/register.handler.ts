@@ -5,6 +5,7 @@ import { AssetDirectory } from '@modules/asset/domain/enums';
 import { UserRepository } from '@modules/user/infrastructure/persistence';
 import { BadRequestException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { UserEntity } from '@/modules/user/domain';
 import { RegisterCommand } from './register.command';
 import { RegisterResult } from './register.result';
 
@@ -34,12 +35,14 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand, Registe
       profileImageId = uploadResult.id;
     }
 
-    const user = await this.userRepository.create({
+    const user = UserEntity.create({
       name:     command.name,
       email:    command.email,
       password: hashedPassword,
       profileImageId,
     });
+
+    await this.userRepository.create(user);
 
     this.logger.log('Auth', `User registered successfully (User ID: ${user.id})`);
 

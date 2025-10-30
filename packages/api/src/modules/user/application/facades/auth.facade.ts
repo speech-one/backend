@@ -17,12 +17,10 @@ export class AuthFacade {
     private readonly queryBus: QueryBus) {
   }
 
-  async register(
-    name: string,
+  async register(name: string,
     email: string,
     password: string,
-    profileImage?: Express.Multer.File,
-  ): Promise<RegisterResult> {
+    profileImage?: Express.Multer.File): Promise<RegisterResult> {
     const command = RegisterCommand.from({
       name, email, password, profileImage,
     });

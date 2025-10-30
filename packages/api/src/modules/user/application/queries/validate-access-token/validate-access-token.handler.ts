@@ -18,7 +18,7 @@ export class ValidateAccessTokenHandler implements IQueryHandler<ValidateAccessT
     try {
       payload = this.jwtService.verify(query.accessToken);
     } catch {
-      throw new UnauthorizedException('유효하지 않거나 만료된 액세스 토큰입니다.');
+      throw new UnauthorizedException('Invalid or expired access token');
     }
 
     if (payload.type !== 'access') {
