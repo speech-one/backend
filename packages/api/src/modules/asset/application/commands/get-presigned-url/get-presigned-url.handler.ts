@@ -16,7 +16,7 @@ implements ICommandHandler<GetPresignedUrlCommand, GetPresignedUrlResult> {
     const { id, expiresIn = 3600 } = command;    const asset = await this.assetRepository.findById(id);
 
     if (!asset) {
-      throw new NotFoundException(`Asset with id ${id} not found`);
+      throw new NotFoundException(`파일을 찾을 수 없습니다. (ID: ${id})`);
     }
 
     const url = await this.s3Service.getPresignedUrl(asset.key, { expiresIn });

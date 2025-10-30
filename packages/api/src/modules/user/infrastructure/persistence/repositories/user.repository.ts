@@ -1,7 +1,7 @@
-import { PrismaService } from '@/common/modules/prisma';
 import { UserEntity, UserEntitySafe } from '@modules/user/domain/entities/user.entity';
 import { UserRepositoryPort } from '@modules/user/domain/repositories/user.repository.port';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '@/common/modules/prisma';
 import { UserMapper } from '../mappers';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class UserRepository implements UserRepositoryPort {
     const user = await this.findById(id);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
     return user;
@@ -60,19 +60,17 @@ export class UserRepository implements UserRepositoryPort {
   }
 
   async create(data: {
-    name: string;
-    email: string;
-    password: string;
+    name:            string;
+    email:           string;
+    password:        string;
     profileImageId?: string | null;
   }): Promise<UserEntitySafe> {
-    const user = await this.prisma.user.create({
-      data: {
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        profileImageId: data.profileImageId,
-      },
-    });
+    const user = await this.prisma.user.create({ data: {
+      name:           data.name,
+      email:          data.email,
+      password:       data.password,
+      profileImageId: data.profileImageId,
+    } });
 
     return UserMapper.toDomainSafe(user);
   }

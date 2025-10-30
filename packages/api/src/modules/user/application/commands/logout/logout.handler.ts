@@ -15,7 +15,7 @@ export class LogoutHandler implements ICommandHandler<LogoutCommand, LogoutResul
     const removed = await this.redis.srem(`refresh:${command.userId}`, command.refreshToken);
 
     if (!removed) {
-      throw new UnauthorizedException('Refresh token mismatch during logout');
+      throw new UnauthorizedException('로그아웃 실패: 리프레시 토큰 불일치');
     }
 
     this.logger.log('Auth', `Logout success (User ID: ${command.userId})`);

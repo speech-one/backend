@@ -14,7 +14,7 @@ export class GetAssetDetailHandler implements IQueryHandler<GetAssetDetailQuery,
     const asset = await this.assetRepository.findById(id);
 
     if (!asset) {
-      throw new NotFoundException(`Asset with id ${id} not found`);
+      throw new NotFoundException(`파일을 찾을 수 없습니다. (ID: ${id})`);
     }
 
     return GetAssetDetailResult.from(asset);

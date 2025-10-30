@@ -15,7 +15,7 @@ export class DeleteAssetHandler implements ICommandHandler<DeleteAssetCommand, v
     const asset = await this.assetRepository.findById(id);
 
     if (!asset) {
-      throw new NotFoundException(`Asset with id ${id} not found`);
+      throw new NotFoundException(`파일을 찾을 수 없습니다. (ID: ${id})`);
     }
 
     await this.s3Service.delete(asset.key);

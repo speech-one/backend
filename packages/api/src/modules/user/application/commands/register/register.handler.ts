@@ -19,7 +19,7 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand, Registe
     const existingUser = await this.userRepository.findByEmail(command.email);
 
     if (existingUser) {
-      throw new BadRequestException('User with this email already exists');
+      throw new BadRequestException('이미 존재하는 이메일입니다.');
     }
 
     const hashedPassword = await hashPassword(command.password);
@@ -27,11 +27,6 @@ export class RegisterHandler implements ICommandHandler<RegisterCommand, Registe
     let profileImageId: string | null = null;
 
     if (command.profileImage) {
-      /*
-       * Upload profile image to public directory with public-read ACL
-       * MinIO: ACL will be applied
-       * Cloudflare R2: ACL is ignored, bucket policy controls access
-       */
       const uploadResult = await this.assetFacade.uploadAsset(command.profileImage,
         AssetDirectory.PROFILE_IMAGES,
         'public-read');

@@ -18,18 +18,14 @@ export class ValidateAccessTokenHandler implements IQueryHandler<ValidateAccessT
     try {
       payload = this.jwtService.verify(query.accessToken);
     } catch {
-      throw new UnauthorizedException('Invalid or expired access token');
+      throw new UnauthorizedException('유효하지 않거나 만료된 액세스 토큰입니다.');
     }
 
     if (payload.type !== 'access') {
-      throw new UnauthorizedException('Invalid token type for this API');
+      throw new UnauthorizedException('유효하지 않은 토큰 타입입니다.');
     }
 
-    const user = await this.userRepository.findById(payload.sub);
-
-    if (!user) {
-      throw new UnauthorizedException('User not found');
-    }
+    const user = await this.userRepository.findByIdOrThrow(payload.sub);
 
     return ValidateAccessTokenResult.from({ user });
   }

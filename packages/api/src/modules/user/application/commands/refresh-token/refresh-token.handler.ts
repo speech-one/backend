@@ -19,17 +19,17 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand,
     try {
       payload = this.jwtService.verify(command.refreshToken);
     } catch {
-      throw new UnauthorizedException('Invalid or expired refresh token');
+      throw new UnauthorizedException('유효하지 않거나 만료된 리프레시 토큰입니다.');
     }
 
     if (payload.type !== 'refresh') {
-      throw new UnauthorizedException('Invalid token type for refresh');
+      throw new UnauthorizedException('유효하지 않은 토큰 타입입니다.');
     }
 
     const exists = await this.redis.sismember(`refresh:${payload.sub}`, command.refreshToken);
 
     if (!exists) {
-      throw new UnauthorizedException('Refresh token mismatch');
+      throw new UnauthorizedException('리프레시 토큰 불일치');
     }
 
     const tokens = await this.generateTokens(payload.sub);

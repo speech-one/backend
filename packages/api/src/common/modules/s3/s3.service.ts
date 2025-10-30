@@ -78,7 +78,7 @@ export class S3Service {
     } catch (err) {
       this.logger.error('S3', `Upload Failed: ${key}`, err);
 
-      throw new InternalServerErrorException('Failed to upload file to S3');
+      throw new InternalServerErrorException('파일을 업로드하는데 실패했습니다.');
     }
   }
 
@@ -97,7 +97,7 @@ export class S3Service {
 
       this.logger.error('S3', `Delete Failed: ${key}`, err);
 
-      throw new InternalServerErrorException('Failed to delete from S3');
+      throw new InternalServerErrorException('파일을 삭제하는데 실패했습니다.');
     }
   }
 
@@ -147,7 +147,7 @@ export class S3Service {
     } catch (err) {
       this.logger.error('S3', `Delete Folder Failed: ${prefix}`, err);
 
-      throw new InternalServerErrorException('Failed to delete folder from S3');
+      throw new InternalServerErrorException('폴더를 삭제하는데 실패했습니다.');
     }
   }
 
@@ -176,7 +176,7 @@ export class S3Service {
     } catch (err) {
       this.logger.error('S3', `Get Presigned URL Failed: ${key}`, err);
 
-      throw new InternalServerErrorException('Failed to generate presigned URL');
+      throw new InternalServerErrorException('업로드 URL 발급에 실패했습니다.');
     }
   }
 
@@ -202,7 +202,7 @@ export class S3Service {
     } catch (err) {
       this.logger.error('S3', `Get Upload Presigned URL Failed: ${key}`, err);
 
-      throw new InternalServerErrorException('Failed to get presigned URL for upload');
+      throw new InternalServerErrorException('업로드 URL 발급에 실패했습니다.');
     }
   }
 
@@ -221,7 +221,7 @@ export class S3Service {
 
       this.logger.error('S3', `Check File Exists Failed: ${key}`, error);
 
-      throw new InternalServerErrorException('Failed to check file existence in S3');
+      throw new InternalServerErrorException('파일 존재 여부 확인 실패');
     }
   }
 

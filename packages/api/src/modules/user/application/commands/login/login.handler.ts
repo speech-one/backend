@@ -21,11 +21,11 @@ export class LoginHandler implements ICommandHandler<LoginCommand, LoginResult> 
     const user = await this.userRepository.findByEmailWithPassword(command.email);
 
     if (!user || !await comparePassword(command.password, user.password)) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('잘못된 이메일 또는 비밀번호입니다.');
     }
 
     if (user.isInactive()) {
-      throw new UnauthorizedException('Inactive user');
+      throw new UnauthorizedException('비활성화된 사용자입니다.');
     }
 
     const tokens = await this.generateTokens(user.id);
