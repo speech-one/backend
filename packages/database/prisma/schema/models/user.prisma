@@ -10,6 +10,8 @@ model User {
 
   status UserStatus @default(ACTIVE)
 
+  basePrompts BasePrompt[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
