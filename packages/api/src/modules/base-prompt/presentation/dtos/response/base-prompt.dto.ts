@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { DataClass } from 'dataclasses';
 
-export class BasePromptResponseDto {
+export class BasePromptResponseDto extends DataClass {
   @ApiProperty({
     description: 'Base prompt ID',
     example:     'uuid',
@@ -12,17 +13,4 @@ export class BasePromptResponseDto {
     example:     'You are a helpful assistant.',
   })
   prompt: string;
-
-  static from(result: {
-    id:     string;
-    prompt: string;
-  }): BasePromptResponseDto {
-    const dto = new BasePromptResponseDto;
-
-    dto.id = result.id;
-
-    dto.prompt = result.prompt;
-
-    return dto;
-  }
 }
