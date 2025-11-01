@@ -1,20 +1,23 @@
 import { ApiResponseType } from '@common/lib/swagger/decorators';
-import { DeleteBasePromptCommand } from '@modules/base-prompt/application/commands';
+import { CreateBasePromptCommand, CreateBasePromptResult, DeleteBasePromptCommand } from '@modules/base-prompt/application/commands';
 import { ListBasePromptsQuery, ListBasePromptsResult } from '@modules/base-prompt/application/queries';
 import { OwnershipGuard } from '@modules/base-prompt/infrastructure/guards';
 import { UserEntity } from '@modules/user/domain/entities';
 import { JwtAuthGuard } from '@modules/user/infrastructure/guards';
 import { CurrentUser } from '@modules/user/presentation/decorators';
 import {
+  Body,
   Controller,
   Delete,
   Get,
   Param,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiTags } from '@nestjs/swagger';
-import { ListBasePromptsResponseDto } from '../dtos/response/base-prompt.dto';
+import { CreateBasePromptRequestDto } from '../dtos/request/create-base-prompt.dto';
+import { BasePromptResponseDto } from '../dtos/response';
 
 @ApiTags('Base Prompt')
 @Controller('base-prompt')
@@ -24,20 +27,46 @@ export class BasePromptController {
     private readonly commandBus: CommandBus) {
   }
 
+  @Post()
+  @ApiResponseType({
+    type:        BasePromptResponseDto,
+    description: 'Base prompt created successfully',
+    errors:      [
+      400,
+      401,
+      500,
+    ],
+  })
+  async create(@CurrentUser() user: UserEntity,
+    @Body() body: CreateBasePromptRequestDto): Promise<BasePromptResponseDto> {
+    const command = CreateBasePromptCommand.from({
+      userId: user.id,
+      prompt: body.prompt,
+    });
+
+    const result = await this.commandBus.execute<CreateBasePromptCommand, CreateBasePromptResult>(command);
+
+    return BasePromptResponseDto.from({
+      id:     result.id,
+      prompt: result.prompt,
+    });
+  }
+
   @Get()
   @ApiResponseType({
-    type:        ListBasePromptsResponseDto,
+    type:        BasePromptResponseDto,
+    isArray:     true,
     description: 'List of base prompts',
     errors:      [
       401,
       500,
     ],
   })
-  async list(@CurrentUser() user: UserEntity): Promise<ListBasePromptsResponseDto> {
+  async list(@CurrentUser() user: UserEntity): Promise<BasePromptResponseDto[]> {
     const query = ListBasePromptsQuery.from({ userId: user.id });
     const result = await this.queryBus.execute<ListBasePromptsQuery, ListBasePromptsResult>(query);
 
-    return ListBasePromptsResponseDto.from(result);
+    return result.basePrompts.map(bp => BasePromptResponseDto.from(bp));
   }
 
   @Delete(':id')

@@ -31,5 +31,12 @@ export class BasePromptRepository implements BasePromptRepositoryPort {
   async delete(id: string): Promise<void> {
     await this.prisma.basePrompt.delete({ where: { id } });
   }
+
+  async create(basePrompt: BasePromptEntity): Promise<BasePromptEntity> {
+    const data = BasePromptMapper.toCreateInput(basePrompt);
+    const row = await this.prisma.basePrompt.create({ data });
+
+    return BasePromptMapper.toDomain(row);
+  }
 }
 

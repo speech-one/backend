@@ -5,6 +5,8 @@ export interface BasePromptRepositoryPort {
 
   findById(id: string): Promise<BasePromptEntity | null>;
 
+  create(basePrompt: BasePromptEntity): Promise<BasePromptEntity>;
+
   delete(id: string): Promise<void>;
 }
 
