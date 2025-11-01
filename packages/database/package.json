@@ -134,9 +134,6 @@
 	"files": [
 		"client"
 	],
-	"prisma": {
-		"seed": "tsx prisma/seed.ts"
-	},
 	"dependencies": {
 		"bcryptjs": "^3.0.2"
 	}

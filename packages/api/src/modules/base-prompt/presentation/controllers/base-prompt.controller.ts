@@ -1,7 +1,7 @@
 import { ApiResponseType } from '@common/lib/swagger/decorators';
 import { CreateBasePromptCommand, CreateBasePromptResult, DeleteBasePromptCommand } from '@modules/base-prompt/application/commands';
 import { ListBasePromptsQuery, ListBasePromptsResult } from '@modules/base-prompt/application/queries';
-import { OwnershipGuard } from '@modules/base-prompt/infrastructure/guards';
+import { BasePromptOwnershipGuard } from '@modules/base-prompt/infrastructure/guards';
 import { UserEntity } from '@modules/user/domain/entities';
 import { JwtAuthGuard } from '@modules/user/infrastructure/guards';
 import { CurrentUser } from '@modules/user/presentation/decorators';
@@ -70,7 +70,7 @@ export class BasePromptController {
   }
 
   @Delete(':id')
-  @UseGuards(OwnershipGuard)
+  @UseGuards(BasePromptOwnershipGuard)
   @ApiResponseType({
     type:        'boolean',
     description: 'Base prompt deleted successfully',

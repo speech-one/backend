@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class OwnershipGuard implements CanActivate {
+export class BasePromptOwnershipGuard implements CanActivate {
   constructor(private readonly basePromptRepository: BasePromptRepository) {
   }
 

@@ -5,7 +5,7 @@ import { UserModule } from '@/modules/user';
 import { CreateBasePromptHandler, DeleteBasePromptHandler } from './application/commands';
 import { BasePromptFacade } from './application/facades';
 import { ListBasePromptsHandler } from './application/queries';
-import { OwnershipGuard } from './infrastructure/guards';
+import { BasePromptOwnershipGuard } from './infrastructure/guards';
 import { BasePromptRepository } from './infrastructure/persistence';
 import { BasePromptController } from './presentation/controllers';
 
@@ -23,7 +23,7 @@ const QueryHandlers = [ListBasePromptsHandler];
     ...QueryHandlers,
     BasePromptFacade,
     BasePromptRepository,
-    OwnershipGuard,
+    BasePromptOwnershipGuard,
   ],
   controllers: [BasePromptController],
   exports:     [BasePromptFacade],
