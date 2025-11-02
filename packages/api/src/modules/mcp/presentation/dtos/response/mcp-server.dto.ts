@@ -15,10 +15,10 @@ export class MCPServerResponseDto extends DataClass {
   title: string;
 
   @ApiProperty({
-    description: 'MCP Server arguments',
+    description: 'MCP Server args',
     example:     'test',
   })
-  arguments: string;
+  args: string;
 }
 
 export class MCPServerDetailResponseDto extends DataClass {
@@ -35,10 +35,10 @@ export class MCPServerDetailResponseDto extends DataClass {
   title: string;
 
   @ApiProperty({
-    description: 'MCP Server arguments (JSON string)',
+    description: 'MCP Server args (JSON string)',
     example:     '{"command": "npx", "args": ["chrome-devtools-mcp@latest"]}',
   })
-  arguments: string;
+  args: string;
 
   @ApiProperty({
     description: 'MCP Server metadata (full JSON)',

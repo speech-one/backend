@@ -13,9 +13,9 @@ export class ListMCPServersHandler implements IQueryHandler<ListMCPServersQuery,
     const servers = await this.mcpServerRepository.findByUserId(userId);
 
     return ListMCPServersResult.from({ servers: servers.map(s => ({
-      id:        s.id,
-      title:     s.title,
-      arguments: s.arguments,
+      id:    s.id,
+      title: s.title,
+      args:  s.args,
     })) });
   }
 }

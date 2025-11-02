@@ -6,8 +6,8 @@ import { CreateMcpCommand } from './create-mcp.command';
 import { CreateMcpResult } from './create-mcp.result';
 
 interface McpServerData {
-  title:     string;
-  arguments: string;
+  title: string;
+  args:  string;
 }
 
 @CommandHandler(CreateMcpCommand)
@@ -32,7 +32,7 @@ export class CreateMcpHandler implements ICommandHandler<CreateMcpCommand, Creat
 
     const servers: McpServerData[] = Object.entries(mcpServers).map(([title, config]) => ({
       title,
-      arguments: JSON.stringify(config),
+      args: JSON.stringify(config),
     }));
 
     if (servers.length === 0) {
@@ -59,20 +59,23 @@ export class CreateMcpHandler implements ICommandHandler<CreateMcpCommand, Creat
       const existingServer = await this.mcpServerRepository.findByUserIdAndTitle(command.userId,
         server.title);
 
+      // 각 서버별로 자신만 포함한 JSON 생성
+      const serverMetadata = JSON.stringify({ mcpServers: { [server.title]: mcpServers[server.title] } });
+
       if (existingServer) {
         // Update
         await this.mcpServerRepository.update(existingServer.id, {
-          arguments: server.arguments,
-          metadata:  command.json,
+          args:     server.args,
+          metadata: serverMetadata,
         });
       } else {
         // Create
         const newServer = McpServerEntity.from({
-          id:        '',
-          userId:    command.userId,
-          title:     server.title,
-          arguments: server.arguments,
-          metadata:  command.json,
+          id:       '',
+          userId:   command.userId,
+          title:    server.title,
+          args:     server.args,
+          metadata: serverMetadata,
         });
 
         await this.mcpServerRepository.create(newServer);

@@ -1,19 +1,30 @@
 import { ApiResponseType } from '@common/lib/swagger/decorators';
-import { CreateMcpCommand, CreateMcpResult, DeleteMcpCommand, UpdateMCPServerCommand, UpdateMCPServerResult } from '@modules/mcp/application/commands';
-import { GetMCPServerQuery, GetMCPServerResult, ListMCPServersQuery, ListMCPServersResult } from '@modules/mcp/application/queries';
+import {
+  CreateMcpCommand,
+  CreateMcpResult,
+  DeleteMcpCommand,
+  UpdateMCPServerCommand,
+  UpdateMCPServerResult,
+} from '@modules/mcp/application/commands';
+import {
+  GetMCPServerQuery,
+  GetMCPServerResult,
+  ListMCPServersQuery,
+  ListMCPServersResult,
+} from '@modules/mcp/application/queries';
 import { McpOwnershipGuard } from '@modules/mcp/infrastructure/guards';
 import { UserEntity } from '@modules/user/domain/entities';
 import { JwtAuthGuard } from '@modules/user/infrastructure/guards';
 import { CurrentUser } from '@modules/user/presentation/decorators';
 import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Patch,
-    Post,
-    UseGuards,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiTags } from '@nestjs/swagger';
@@ -24,10 +35,8 @@ import { MCPServerDetailResponseDto, MCPServerResponseDto } from '../dtos/respon
 @Controller('mcp')
 @UseGuards(JwtAuthGuard)
 export class MCPController {
-  constructor(
-    private readonly queryBus: QueryBus,
-    private readonly commandBus: CommandBus,
-  ) {
+  constructor(private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus) {
   }
 
   @Post()
@@ -40,10 +49,10 @@ export class MCPController {
       500,
     ],
   })
-  async create(
-    @CurrentUser() user: UserEntity,
-    @Body() body: CreateMCPRequestDto,
-  ): Promise<{ id: string }> {
+  async create(@CurrentUser() user: UserEntity,
+    @Body() body: CreateMCPRequestDto): Promise<{
+    id: string;
+  }> {
     const command = CreateMcpCommand.from({
       userId: user.id,
       json:   body.json,
@@ -51,9 +60,7 @@ export class MCPController {
 
     const result = await this.commandBus.execute<CreateMcpCommand, CreateMcpResult>(command);
 
-    return {
-      id: result.id,
-    };
+    return { id: result.id };
   }
 
   @Get()
@@ -95,7 +102,7 @@ export class MCPController {
   @Patch(':id')
   @UseGuards(McpOwnershipGuard)
   @ApiResponseType({
-    type:        'object',
+    type:        'boolean',
     description: 'MCP Server updated successfully',
     errors:      [
       400,
@@ -105,20 +112,18 @@ export class MCPController {
       500,
     ],
   })
-  async update(
-    @Param('id') id: string,
+  async update(@Param('id') id: string,
     @CurrentUser() user: UserEntity,
-    @Body() body: UpdateMCPServerRequestDto,
-  ): Promise<{ id: string }> {
+    @Body() body: UpdateMCPServerRequestDto): Promise<boolean> {
     const command = UpdateMCPServerCommand.from({
       id,
       userId: user.id,
       json:   body.json,
     });
 
-    const result = await this.commandBus.execute<UpdateMCPServerCommand, UpdateMCPServerResult>(command);
+    await this.commandBus.execute<UpdateMCPServerCommand, UpdateMCPServerResult>(command);
 
-    return { id: result.id };
+    return true;
   }
 
   @Delete(':id')

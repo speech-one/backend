@@ -17,10 +17,10 @@ export class GetMCPServerHandler implements IQueryHandler<GetMCPServerQuery, Get
     }
 
     return GetMCPServerResult.from({
-      id:        server.id,
-      title:     server.title,
-      arguments: server.arguments,
-      metadata:  server.metadata,
+      id:       server.id,
+      title:    server.title,
+      args:     server.args,
+      metadata: server.metadata,
     });
   }
 }

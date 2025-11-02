@@ -6,7 +6,7 @@ export class CreateMCPRequestDto {
   @IsNotEmpty()
   @ApiProperty({
     description: 'MCP JSON configuration',
-    example:     '{"mcpServers": [{"title": "Context7", "arguments": "test"}]}',
+    example:     '{"mcpServers": [{"title": "Context7", "args": "test"}]}',
   })
   json: string;
 }

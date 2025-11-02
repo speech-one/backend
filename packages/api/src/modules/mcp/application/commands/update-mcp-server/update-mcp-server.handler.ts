@@ -41,11 +41,12 @@ export class UpdateMCPServerHandler implements ICommandHandler<UpdateMCPServerCo
     }
 
     const [title, config] = Object.entries(mcpServers)[0];
+    const serverMetadata = JSON.stringify({ mcpServers: { [title]: config } });
 
     await this.mcpServerRepository.update(command.id, {
-      title:     title,
-      arguments: JSON.stringify(config),
-      metadata:  command.json,
+      title:    title,
+      args:     JSON.stringify(config),
+      metadata: serverMetadata,
     });
 
     return UpdateMCPServerResult.from({ id: command.id });
